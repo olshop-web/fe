@@ -1,24 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import Content from "./Pages/Home/Content";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [index, setIndex] = useState(6);
+  const [newProducts, setNewProducts] = useState();
+  const loadMore = () => {
+    if (index > products.length) {
+      setNewProducts(products.slice(0, products.length - 1));
+    } else {
+      let newIndex = index + 6;
+      setNewProducts(products.slice(0, newIndex));
+      setIndex(newIndex);
+    }
+  };
+
+  useEffect(() => {
+    fetch("https://dummyjson.com/products")
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data.products);
+        setNewProducts(data.products.slice(0, 6));
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Content isLoading={isLoading} loadMore={loadMore} products={newProducts} />
   );
 }
 
