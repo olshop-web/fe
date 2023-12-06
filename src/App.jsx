@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import Content from "./Pages/Home/Content";
+import HeaderHome from "./components/header/home.jsx";
+
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -29,7 +31,11 @@ function App() {
   }, []);
 
   return (
+
+    <>
+        <HeaderHome/>
     <Content isLoading={isLoading} loadMore={loadMore} products={newProducts} />
+    </>
   );
 }
 
